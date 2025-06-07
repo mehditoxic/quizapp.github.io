@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+
+body {
+    font-family: 'Vazirmatn', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+}
+
+#start-screen h1 {
+    color: #0056b3;
+}
+
+button {
+    font-family: 'Vazirmatn', sans-serif;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.hidden {
+    display: none;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#timer {
+    background-color: #e9ecef;
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #495057;
+}
+
+#question-container {
+    margin-bottom: 25px;
+}
+
+#question-text {
+    font-size: 20px;
+    line-height: 1.6;
+    text-align: right;
+}
+
+#answers-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.answer-btn {
+    width: 100%;
+    text-align: right;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 2px solid #ced4da;
+    padding: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.answer-btn:hover:not([disabled]) {
+    background-color: #e2e6ea;
+    border-color: #b1b9c1;
+}
+
+.answer-btn.correct {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.answer-btn.incorrect {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.answer-btn:disabled {
+    cursor: not-allowed;
+}
+
+#next-btn {
+    background-color: #28a745;
+}
+
+#next-btn:hover {
+    background-color: #218838;
+}
+
+#result-screen h2 {
+    color: #0056b3;
+}
+
+#result-screen p {
+    font-size: 18px;
+}
