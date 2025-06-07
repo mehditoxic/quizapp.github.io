@@ -10,26 +10,34 @@
     <div class="container">
         <div id="start-screen">
             <h1>آزمون آنلاین مدلهای زبانی بزرگ (LLM)</h1>
-            <div id="quiz-options">
-                <p><strong>تعداد سوالات آزمون را انتخاب کنید:</strong></p>
+            
+            <div class="config-group">
+                <label for="topic-select">۱. مبحث آزمون را انتخاب کنید:</label>
+                <select id="topic-select">
+                    </select>
+            </div>
+
+            <div class="config-group" id="length-config-group">
+                <p>۲. تعداد سوالات را انتخاب کنید:</p>
                 <div class="option-group">
                     <label>
                         <input type="radio" name="quiz-length" value="20" checked>
-                        آزمون کوتاه (۲۰ سوال در ۲۰ دقیقه)
+                        آزمون کوتاه (۲۰ سوال تصادفی)
                     </label>
                     <label>
                         <input type="radio" name="quiz-length" value="150">
-                        آزمون کامل (۱۵۰ سوال در ۱۵۰ دقیقه)
+                        آزمون کامل (همه سوالات)
                     </label>
                 </div>
             </div>
+            
             <button id="start-btn">شروع آزمون</button>
         </div>
 
         <div id="quiz-screen" class="hidden">
             <div id="header">
                 <div id="timer">۰۰:۰۰</div>
-                <div id="progress">سوال ۱ از ۲۰</div>
+                <div id="progress">سوال ۱ از --</div>
             </div>
             <div id="question-container">
                 <h2 id="question-text">متن سوال در اینجا قرار می‌گیرد...</h2>
@@ -44,7 +52,7 @@
             <p>تعداد پاسخ‌های صحیح: <span id="score-correct"></span></p>
             <p>تعداد پاسخ‌های غلط: <span id="score-incorrect"></span></p>
             <p>درصد موفقیت: <span id="score-percentage"></span>%</p>
-            <button id="restart-btn">شروع مجدد آزمون</button>
+            <button id="restart-btn">بازگشت به صفحه اصلی</button>
         </div>
     </div>
 
