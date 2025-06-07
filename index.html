@@ -10,14 +10,25 @@
     <div class="container">
         <div id="start-screen">
             <h1>آزمون آنلاین مدلهای زبانی بزرگ (LLM)</h1>
-            <p>این آزمون شامل ۲۰ سوال تصادفی از بانک سوالات است.</p>
-            <p>مدت زمان پاسخگویی: <strong>۲۰ دقیقه</strong></p>
+            <div id="quiz-options">
+                <p><strong>تعداد سوالات آزمون را انتخاب کنید:</strong></p>
+                <div class="option-group">
+                    <label>
+                        <input type="radio" name="quiz-length" value="20" checked>
+                        آزمون کوتاه (۲۰ سوال در ۲۰ دقیقه)
+                    </label>
+                    <label>
+                        <input type="radio" name="quiz-length" value="150">
+                        آزمون کامل (۱۵۰ سوال در ۱۵۰ دقیقه)
+                    </label>
+                </div>
+            </div>
             <button id="start-btn">شروع آزمون</button>
         </div>
 
         <div id="quiz-screen" class="hidden">
             <div id="header">
-                <div id="timer">۲۰:۰۰</div>
+                <div id="timer">۰۰:۰۰</div>
                 <div id="progress">سوال ۱ از ۲۰</div>
             </div>
             <div id="question-container">
