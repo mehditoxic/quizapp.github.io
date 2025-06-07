@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // تمام سوالات استخراج شده از PDF
+    // بانک کامل سوالات
     const quizData = [
-    // موضوع اول: مبانی هوش مصنوعی
+ // موضوع اول: مبانی هوش مصنوعی
     {"question": "هوش مصنوعی (AI) چیست؟", "correct_answer": "شاخه ای از علوم کامپیوتر که به توسعه سیستمهایی می پردازد که قادر به انجام وظایف نیازمند هوش انسانی هستند ", "incorrect_answers": ["مجموعه ای از الگوریتم ها که صرفاً برای پردازش داده های عددی طراحی شده اند ", "فناوری ای که فقط برای رباتها و ماشین های فیزیکی کاربرد دارد ", "روشی برای ذخیره سازی داده ها در پایگاه های داده بزرگ "]},
     {"question": "کدام یک از موارد زیر نمونه ای از یادگیری نظارت شده (Supervised Learning) است؟", "correct_answer": "دسته بندی ایمیلها به اسپم و غیر اسیم با استفاده از داده های برچسب خورده ", "incorrect_answers": ["کشف الگوهای پنهان در داده های بدون برچسب ", "یادگیری از طریق تعامل مستقیم با محیط بدون داده های آموزشی ", "تولید داده های جدید بر اساس نمونه های موجود بدون استفاده از برچسب "]},
     {"question": "تفاوت اصلی بین یادگیری نظارت شده و یادگیری بدون نظارت چیست؟", "correct_answer": "در یادگیری نظارت شده داده ها دارای برچسب هستند و مدل بر اساس آنها آموزش میبیند ولی در یادگیری بدون نظارت داده ها برچسب ندارند ", "incorrect_answers": ["یادگیری بدون نظارت فقط برای داده های متنی کاربرد دارد ولی یادگیری نظارت شده برای داده های عددی ", "یادگیری نظارت شده به صورت خودکار انجام میشود ولی یادگیری بدون نظارت نیاز به دخالت انسان دارد ", "یادگیری بدون نظارت همیشه دقیق تر از یادگیری نظارت شده است "]},
@@ -180,7 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {"question": "در بهینه سازی مدل کدام روش برای انتخاب بهترین هایپرپارامترها کاربرد دارد؟", "correct_answer": "جستجوی شبکه ای (Grid Search) و جستجوی تصادفی (Random Search) با ارزیابی عملکرد مدل", "incorrect_answers": ["انتخاب تصادفی هایپر پارامترها بدون ارزیابی که ممکن است منجر به نتایج ضعیف شود", "استفاده از تنظیمات پیش فرض بدون تغییر که ممکن است بهینه نباشند", "افزایش تعداد لایه ها برای بهبود خودکار که تضمینی نیست"]},
     {"question": "چگونه میتوان از مشکلات ناپدید شدن یا انفجار گرادیان در مدلهای عمیق جلوگیری کرد؟", "correct_answer": "استفاده از توابع فعال سازی مناسب مانند ReLU، نرمال سازی Batch و الگوریتم های بهینه سازی پیشرفته ", "incorrect_answers": ["افزایش نرخ یادگیری به مقدار زیاد که ممکن است باعث ناپایداری شود ", "کاهش تعداد داده های آموزشی که تأثیری بر این مشکل ندارد ", "حذف لایه های پنهان که ممکن است مدل را ضعیف کند "]},
     {"question": "برای بهبود عملکرد مدل در داده های جدید و ناشناخته کدام روش مناسب تر است؟", "correct_answer": "استفاده از تکنیکهای یادگیری انتقالی (Transfer Learning) و فاین تونینگ با داده های هدف ", "incorrect_answers": ["آموزش مدل فقط روی داده های قدیمی بدون به روز رسانی که ممکن است تعمیم پذیری را کاهش دهد ", "کاهش تعداد داده های آموزشی برای تمرکز بر داده های اصلی که ممکن است مضر باشد ", "استفاده از مدلهای ساده بدون تنظیمات اختصاصی که ممکن است کافی نباشد "]}
-         ];
+    ];
+
     // دریافت عناصر از DOM
     const startScreen = document.getElementById('start-screen');
     const quizScreen = document.getElementById('quiz-screen');
@@ -194,16 +195,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressEl = document.getElementById('progress');
 
     // متغیرهای وضعیت آزمون
-    let shuffledQuestions, currentQuestionIndex, score, timerInterval;
-    const totalQuestionsInTest = 20;
-    const timeLimit = 20 * 60; // 20 دقیقه به ثانیه
+    let shuffledQuestions, currentQuestionIndex, score, timerInterval, totalQuestionsInTest, timeLimit;
 
     function startQuiz() {
+        // خواندن انتخاب کاربر برای تعداد سوالات
+        const selectedLength = document.querySelector('input[name="quiz-length"]:checked').value;
+        totalQuestionsInTest = parseInt(selectedLength, 10);
+        timeLimit = totalQuestionsInTest * 60; // 1 دقیقه برای هر سوال
+
+        // آماده سازی صفحه آزمون
         startScreen.classList.add('hidden');
         resultScreen.classList.add('hidden');
         quizScreen.classList.remove('hidden');
-        nextBtn.classList.add('hidden');
-
+        
+        // انتخاب سوالات به صورت تصادفی
         shuffledQuestions = quizData.sort(() => Math.random() - 0.5).slice(0, totalQuestionsInTest);
         currentQuestionIndex = 0;
         score = 0;
@@ -247,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function selectAnswer(e) {
         const selectedBtn = e.target;
         const correct = selectedBtn.dataset.correct === 'true';
-
         if (correct) {
             score++;
         }
@@ -261,19 +265,24 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = true;
         });
 
-        // **منطق اصلاح شده برای پایان آزمون**
-        // اگر این آخرین سوال نیست، دکمه "سوال بعدی" را نشان بده
-        if (currentQuestionIndex < totalQuestionsInTest - 1) {
-            nextBtn.classList.remove('hidden');
+        // **منطق کلیدی و اصلاح شده برای پایان آزمون**
+        // اگر سوال آخر است، متن دکمه را تغییر بده
+        if (currentQuestionIndex === totalQuestionsInTest - 1) {
+            nextBtn.innerText = 'نمایش نتایج';
         } else {
-            // اگر آخرین سوال است، بعد از 1.5 ثانیه نتایج را نمایش بده
-            setTimeout(showResults, 1500);
+            nextBtn.innerText = 'سوال بعدی';
         }
+        nextBtn.classList.remove('hidden');
     }
     
     function handleNextButton() {
-        currentQuestionIndex++;
-        setNextQuestion();
+        // اگر این آخرین سوال است، نتایج را نشان بده، در غیر این صورت به سوال بعدی برو
+        if (currentQuestionIndex < totalQuestionsInTest - 1) {
+            currentQuestionIndex++;
+            setNextQuestion();
+        } else {
+            showResults();
+        }
     }
 
     function showResults() {
@@ -283,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const correctCount = score;
         const incorrectCount = totalQuestionsInTest - score;
-        const percentage = (score / totalQuestionsInTest) * 100;
+        const percentage = totalQuestionsInTest > 0 ? (score / totalQuestionsInTest) * 100 : 0;
 
         document.getElementById('score-correct').innerText = correctCount;
         document.getElementById('score-incorrect').innerText = incorrectCount;
@@ -292,23 +301,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startTimer() {
         let timeLeft = timeLimit;
-        timerEl.innerText = `${Math.floor(timeLeft / 60)}:00`;
-
         timerInterval = setInterval(() => {
-            timeLeft--;
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 showResults();
             }
+            timeLeft--;
         }, 1000);
+    }
+    
+    function handleRestart() {
+        resultScreen.classList.add('hidden');
+        startScreen.classList.remove('hidden');
     }
 
     // افزودن Event Listener ها
     startBtn.addEventListener('click', startQuiz);
     nextBtn.addEventListener('click', handleNextButton);
-    restartBtn.addEventListener('click', startQuiz);
+    restartBtn.addEventListener('click', handleRestart);
 });
