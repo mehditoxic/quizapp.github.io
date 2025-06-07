@@ -25,6 +25,43 @@ body {
     color: #0056b3;
 }
 
+/* استایل برای بخش انتخاب تعداد سوالات */
+#quiz-options {
+    margin: 25px 0;
+    text-align: right;
+    padding: 0 20px;
+}
+
+#quiz-options p {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-group label {
+    display: block;
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.option-group label:hover {
+    background-color: #e9ecef;
+}
+
+.option-group input[type="radio"] {
+    margin-left: 10px;
+}
+
+
 button {
     font-family: 'Vazirmatn', sans-serif;
     background-color: #007bff;
