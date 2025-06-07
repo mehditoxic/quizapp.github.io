@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ساختار داده جدید: سوالات بر اساس مبحث دسته‌بندی شده‌اند
-// ساختار داده جدید: تمام ۱۵۰ سوال بر اساس مبحث دسته‌بندی شده‌اند
-const quizDataByTopic = {
+    // **مهم:** در اینجا فقط دو مبحث اول به عنوان نمونه قرار داده شده است.
+    // شما باید بقیه ۱۳ مبحث را به همین شکل در اینجا اضافه کنید.
+    const quizDataByTopic = {
     "مبانی هوش مصنوعی": [
         {"question": "هوش مصنوعی (AI) چیست؟", "correct_answer": "شاخه ای از علوم کامپیوتر که به توسعه سیستمهایی می پردازد که قادر به انجام وظایف نیازمند هوش انسانی هستند", "incorrect_answers": ["مجموعه ای از الگوریتم ها که صرفاً برای پردازش داده های عددی طراحی شده اند", "فناوری ای که فقط برای رباتها و ماشین های فیزیکی کاربرد دارد", "روشی برای ذخیره سازی داده ها در پایگاه های داده بزرگ"]},
         {"question": "کدام یک از موارد زیر نمونه ای از یادگیری نظارت شده (Supervised Learning) است؟", "correct_answer": "دسته بندی ایمیلها به اسپم و غیر اسیم با استفاده از داده های برچسب خورده", "incorrect_answers": ["کشف الگوهای پنهان در داده های بدون برچسب", "یادگیری از طریق تعامل مستقیم با محیط بدون داده های آموزشی", "تولید داده های جدید بر اساس نمونه های موجود بدون استفاده از برچسب"]},
@@ -183,8 +184,7 @@ const quizDataByTopic = {
         {"question": "برای بهبود عملکرد مدل در داده های جدید و ناشناخته کدام روش مناسب تر است؟", "correct_answer": "استفاده از تکنیکهای یادگیری انتقالی (Transfer Learning) و فاین تونینگ با داده های هدف", "incorrect_answers": ["آموزش مدل فقط روی داده های قدیمی بدون به روز رسانی که ممکن است تعمیم پذیری را کاهش دهد", "کاهش تعداد داده های آموزشی برای تمرکز بر داده های اصلی که ممکن است مضر باشد", "استفاده از مدلهای ساده بدون تنظیمات اختصاصی که ممکن است کافی نباشد"]}
     ]
 };
-    // **نکته مهم:** شما باید تمام ۱۵۰ سوال را در ساختار بالا دسته‌بندی کنید.
-
+  
     // دریافت عناصر از DOM
     const startScreen = document.getElementById('start-screen');
     const quizScreen = document.getElementById('quiz-screen');
@@ -234,20 +234,23 @@ const quizDataByTopic = {
         let questionsToShuffle = [];
 
         if (selectedTopic === 'all') {
-            // ترکیب همه سوالات از همه مباحث
             questionsToShuffle = Object.values(quizDataByTopic).flat();
             const selectedLength = document.querySelector('input[name="quiz-length"]:checked').value;
             totalQuestionsInTest = parseInt(selectedLength, 10);
         } else {
-            // انتخاب سوالات فقط از مبحث انتخاب شده
             questionsToShuffle = quizDataByTopic[selectedTopic];
-            totalQuestionsInTest = questionsToShuffle.length; // معمولا ۱۰ سوال
+            totalQuestionsInTest = questionsToShuffle.length;
         }
 
         shuffleArray(questionsToShuffle);
         shuffledQuestions = questionsToShuffle.slice(0, totalQuestionsInTest);
 
-        const timeLimit = totalQuestionsInTest * 60; // 1 دقیقه برای هر سوال
+        if (shuffledQuestions.length === 0) {
+            alert('برای مبحث انتخاب شده سوالی وجود ندارد یا داده‌ها کامل نیست!');
+            return;
+        }
+
+        const timeLimit = totalQuestionsInTest * 60;
         currentQuestionIndex = 0;
         score = 0;
 
@@ -270,13 +273,13 @@ const quizDataByTopic = {
         questionText.innerText = question.question;
 
         const answers = [...question.incorrect_answers, question.correct_answer];
-        shuffleArray(answers); // استفاده از الگوریتم بهینه
+        shuffleArray(answers);
 
         answers.forEach(answer => {
             const button = document.createElement('button');
             button.innerText = answer;
             button.classList.add('answer-btn');
-            if (answer === question.correct_answer) {
+            if (answer.trim() === question.correct_answer.trim()) {
                 button.dataset.correct = true;
             }
             button.addEventListener('click', selectAnswer);
@@ -349,11 +352,12 @@ const quizDataByTopic = {
     }
 
     function handleRestart() {
+        quizScreen.classList.add('hidden');
         resultScreen.classList.add('hidden');
         startScreen.classList.remove('hidden');
     }
 
-    // --- اجرای اولیه ---
+    // --- اجرای اولیه برنامه ---
     populateTopics();
     topicSelect.addEventListener('change', handleTopicChange);
     startBtn.addEventListener('click', startQuiz);
