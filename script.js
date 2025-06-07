@@ -1,4 +1,4 @@
-
+document.addEventListener('DOMContentLoaded', () => {
 const quizData = [
     // موضوع اول: مبانی هوش مصنوعی
     {"question": "هوش مصنوعی (AI) چیست؟", "correct_answer": "شاخه ای از علوم کامپیوتر که به توسعه سیستمهایی می پردازد که قادر به انجام وظایف نیازمند هوش انسانی هستند ", "incorrect_answers": ["مجموعه ای از الگوریتم ها که صرفاً برای پردازش داده های عددی طراحی شده اند ", "فناوری ای که فقط برای رباتها و ماشین های فیزیکی کاربرد دارد ", "روشی برای ذخیره سازی داده ها در پایگاه های داده بزرگ "]},
@@ -181,217 +181,134 @@ const quizData = [
     {"question": "برای بهبود عملکرد مدل در داده های جدید و ناشناخته کدام روش مناسب تر است؟", "correct_answer": "استفاده از تکنیکهای یادگیری انتقالی (Transfer Learning) و فاین تونینگ با داده های هدف ", "incorrect_answers": ["آموزش مدل فقط روی داده های قدیمی بدون به روز رسانی که ممکن است تعمیم پذیری را کاهش دهد ", "کاهش تعداد داده های آموزشی برای تمرکز بر داده های اصلی که ممکن است مضر باشد ", "استفاده از مدلهای ساده بدون تنظیمات اختصاصی که ممکن است کافی نباشد "]}
 ];
 
-// دریافت عناصر از DOM
-const startScreen = document.getElementById('start-screen');
-const quizScreen = document.getElementById('quiz-screen');
-const resultScreen = document.getElementById('result-screen');
-
-const startBtn = document.getElementById('start-btn');
-const nextBtn = document.getElementById('next-btn');
-const restartBtn = document.getElementById('restart-btn');
-
-const questionText = document.getElementById('question-text');
-const answersContainer = document.getElementById('answers-container');
-const timerEl = document.getElementById('timer');
-const progressEl = document.getElementById('progress');
-
-// متغیرهای وضعیت آزمون
-let shuffledQuestions, currentQuestionIndex, score, timerInterval;
-const totalQuestions = 20; // 20 سوال در هر آزمون
-const timeLimit = 20 * 60; // 20 دقیقه به ثانیه
-
-// افزودن Event Listener ها
-startBtn.addEventListener('click', startQuiz);
-nextBtn.addEventListener('click', () => {
-    currentQuestionIndex++;
-    setNextQuestion();
-});
-restartBtn.addEventListener('click', () => {
-    resultScreen.classList.add('hidden');
-    startScreen.classList.remove('hidden');
-});
-
-// تابع شروع آزمون
-function startQuiz() {
-    startScreen.classList.add('hidden');
-    quizScreen.classList.remove('hidden');
-    
-    // انتخاب ۲۰ سوال تصادفی از کل بانک سوالات
-    shuffledQuestions = quizData.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
-    currentQuestionIndex = 0;
-    score = 0;
-    
-    startTimer();
-    setNextQuestion();
-}
-
-// تابع تنظیم سوال بعدی
-function setNextQuestion() {
-    resetState();
-    if (currentQuestionIndex < shuffledQuestions.length) {
-        showQuestion(shuffledQuestions[currentQuestionIndex]);
-        progressEl.innerText = `سوال ${currentQuestionIndex + 1} از ${totalQuestions}`;
-    } else {
-        showResults();
-    }
-}
-
-// تابع نمایش سوال و گزینه‌ها
-function showQuestion(question) {
-    questionText.innerText = question.question;
-    
-    // ترکیب گزینه‌ها و تصادفی کردن آنها
-    const answers = [...question.incorrect_answers, question.correct_answer];
-    answers.sort(() => Math.random() - 0.5);
-
-    answers.forEach(answer => {
-        const button = document.createElement('button');
-        button.innerText = answer;
-        button.classList.add('answer-btn');
-        if (answer === question.correct_answer) {
-            button.dataset.correct = true;
-        }
-        button.addEventListener('click', selectAnswer);
-        answersContainer.appendChild(button);
-    });
-}
-
-// تابع پاکسازی وضعیت برای سوال جدید
-function resetState() {
-    nextBtn.classList.add('hidden');
-    while (answersContainer.firstChild) {
-        answersContainer.removeChild(answersContainer.firstChild);
-    }
-}
-
-// تابع انتخاب پاسخ
-function selectAnswer(e) {
-    const selectedBtn = e.target;
-    const correct = selectedBtn.dataset.correct === 'true';
-
-    if (correct) {
-        score++;
-        selectedBtn.classList.add('correct');
-    } else {
-        selectedBtn.classList.add('incorrect');
-    }
-
-    // نمایش گزینه صحیح
-    Array.from(answersContainer.children).forEach(button => {
-        if (button.dataset.correct === 'true') {
-            button.classList.add('correct');
-        }
-        button.disabled = true; // غیرفعال کردن گزینه‌ها پس از انتخاب
-    });
-    
-    // نمایش دکمه "سوال بعدی" با تاخیر برای مشاهده پاسخ
-    setTimeout(() => {
-        if (currentQuestionIndex < shuffledQuestions.length -1) {
-            currentQuestionIndex++;
-            setNextQuestion();
-        } else {
-            showResults();
-        }
-    }, 1500); // 1.5 ثانیه تاخیر
-}
-
-
-// تابع نمایش نتایج نهایی
-function showResults() {
-    clearInterval(timerInterval);
-    quizScreen.classList.add('hidden');
-    resultScreen.classList.remove('hidden');
-    
-    const correctCount = score;
-    const incorrectCount = totalQuestions - score;
-    const percentage = (score / totalQuestions) * 100;
-    
-    document.getElementById('score-correct').innerText = correctCount;
-    document.getElementById('score-incorrect').innerText = incorrectCount;
-    document.getElementById('score-percentage').innerText = percentage.toFixed(1);
-}
-
-// تابع مدیریت تایمر
-function startTimer() {
-    let timeLeft = timeLimit;
-    timerEl.innerText = `${Math.floor(timeLeft / 60)}:00`;
-
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            showResults();
-        }
-    }, 1000);
-}
-
-// تغییر کوچک در منطق selectAnswer برای نمایش دکمه "سوال بعدی"
-function selectAnswer(e) {
-    const selectedBtn = e.target;
-    const correct = selectedBtn.dataset.correct === 'true';
-
-    if (correct) {
-        score++;
-    }
-    
-    // نمایش درستی یا نادرستی همه گزینه‌ها
-    Array.from(answersContainer.children).forEach(button => {
-        if (button.dataset.correct === 'true') {
-            button.classList.add('correct');
-        } else {
-            button.classList.add('incorrect');
-        }
-        button.disabled = true;
-    });
-
-    if (currentQuestionIndex < shuffledQuestions.length - 1) {
-        nextBtn.classList.remove('hidden');
-    } else {
-        // اگر آخرین سوال بود، به جای دکمه "سوال بعدی"، دکمه "نمایش نتایج" را نشان بده
-        const resultsBtn = document.createElement('button');
-        resultsBtn.innerText = 'نمایش نتایج';
-        resultsBtn.addEventListener('click', showResults);
-        answersContainer.appendChild(resultsBtn);
-    }
-}
-
-// بازنویسی کامل تابع setNextQuestion برای سازگاری با منطق جدید
-function setNextQuestion() {
-    resetState();
-    progressEl.innerText = `سوال ${currentQuestionIndex + 1} از ${totalQuestions}`;
-    showQuestion(shuffledQuestions[currentQuestionIndex]);
-}
-
-// بازنویسی کامل تابع startQuiz برای سازگاری با منطق جدید
-function startQuiz() {
-    startScreen.classList.add('hidden');
-    resultScreen.classList.add('hidden');
-    quizScreen.classList.remove('hidden');
-    
-    shuffledQuestions = quizData.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
-    currentQuestionIndex = 0;
-    score = 0;
-    
-    clearInterval(timerInterval);
-    startTimer();
-    setNextQuestion();
-}
-
-
-// بازنویسی نهایی Listener ها و توابع برای اطمینان از عملکرد صحیح
-document.addEventListener('DOMContentLoaded', () => {
+    // دریافت عناصر از DOM
+    const startScreen = document.getElementById('start-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
     const startBtn = document.getElementById('start-btn');
     const nextBtn = document.getElementById('next-btn');
     const restartBtn = document.getElementById('restart-btn');
+    const questionText = document.getElementById('question-text');
+    const answersContainer = document.getElementById('answers-container');
+    const timerEl = document.getElementById('timer');
+    const progressEl = document.getElementById('progress');
 
-    startBtn.addEventListener('click', startQuiz);
-    nextBtn.addEventListener('click', () => {
+    // متغیرهای وضعیت آزمون
+    let shuffledQuestions, currentQuestionIndex, score, timerInterval;
+    const totalQuestionsInTest = 20;
+    const timeLimit = 20 * 60; // 20 دقیقه به ثانیه
+
+    function startQuiz() {
+        startScreen.classList.add('hidden');
+        resultScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+
+        shuffledQuestions = quizData.sort(() => Math.random() - 0.5).slice(0, totalQuestionsInTest);
+        currentQuestionIndex = 0;
+        score = 0;
+
+        clearInterval(timerInterval);
+        startTimer();
+        setNextQuestion();
+    }
+
+    function setNextQuestion() {
+        resetState();
+        showQuestion(shuffledQuestions[currentQuestionIndex]);
+    }
+
+    function showQuestion(question) {
+        progressEl.innerText = `سوال ${currentQuestionIndex + 1} از ${totalQuestionsInTest}`;
+        questionText.innerText = question.question;
+
+        const answers = [...question.incorrect_answers, question.correct_answer];
+        answers.sort(() => Math.random() - 0.5);
+
+        answers.forEach(answer => {
+            const button = document.createElement('button');
+            button.innerText = answer;
+            button.classList.add('answer-btn');
+            if (answer === question.correct_answer) {
+                button.dataset.correct = true;
+            }
+            button.addEventListener('click', selectAnswer);
+            answersContainer.appendChild(button);
+        });
+    }
+
+    function resetState() {
+        nextBtn.classList.add('hidden');
+        while (answersContainer.firstChild) {
+            answersContainer.removeChild(answersContainer.firstChild);
+        }
+    }
+
+    function selectAnswer(e) {
+        const selectedBtn = e.target;
+        const correct = selectedBtn.dataset.correct === 'true';
+
+        if (correct) {
+            score++;
+        }
+
+        Array.from(answersContainer.children).forEach(button => {
+            if (button.dataset.correct === 'true') {
+                button.classList.add('correct');
+            } else {
+                button.classList.add('incorrect');
+            }
+            button.disabled = true;
+        });
+
+        // **منطق اصلاح شده برای پایان آزمون**
+        // اگر این آخرین سوال نیست، دکمه "سوال بعدی" را نشان بده
+        if (currentQuestionIndex < totalQuestionsInTest - 1) {
+            nextBtn.classList.remove('hidden');
+        } else {
+            // اگر آخرین سوال است، بعد از 1.5 ثانیه نتایج را نمایش بده
+            setTimeout(showResults, 1500);
+        }
+    }
+    
+    function handleNextButton() {
         currentQuestionIndex++;
         setNextQuestion();
-    });
+    }
+
+    function showResults() {
+        clearInterval(timerInterval);
+        quizScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+
+        const correctCount = score;
+        const incorrectCount = totalQuestionsInTest - score;
+        const percentage = (score / totalQuestionsInTest) * 100;
+
+        document.getElementById('score-correct').innerText = correctCount;
+        document.getElementById('score-incorrect').innerText = incorrectCount;
+        document.getElementById('score-percentage').innerText = percentage.toFixed(1);
+    }
+
+    function startTimer() {
+        let timeLeft = timeLimit;
+        timerEl.innerText = `${Math.floor(timeLeft / 60)}:00`;
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                showResults();
+            }
+        }, 1000);
+    }
+
+    // افزودن Event Listener ها
+    startBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', handleNextButton);
     restartBtn.addEventListener('click', startQuiz);
 });
